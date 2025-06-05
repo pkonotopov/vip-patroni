@@ -52,11 +52,12 @@ sudo python vip.py --interface=eth1 --vip=10.0.0.10 on_role_change replica myclu
 ```
 Check the logs or `ip addr show` to verify that the VIP is added or removed.
 
-## Running Tests
-Tests require `pytest` and mock the network operations so they can run without
-root privileges:
+## Linting and Tests
+Flake8 and pytest can be run locally to check the code style and run the unit
+tests. The network operations are mocked so no special privileges are required:
 ```bash
 pip install -r requirements.txt
+flake8 vip.py tests
 pytest
 ```
 

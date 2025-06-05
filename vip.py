@@ -5,12 +5,14 @@ Usage:
     vip.py [--interface=<iface>] [--vip=<ip>] <hook> <role> <scope>
 
 Examples:
-    vip.py --interface=eth1 --vip=10.0.0.10 on_role_change master myclustername
+    vip.py --interface=eth1 --vip=10.0.0.10 \
+        on_role_change master myclustername
 
 Options:
     --interface=<iface>     Network interface to use [default: eth0].
     --vip=<ip>              Virtual IP address to manage [default: 10.38.1.50].
-    <hook>                  Possible values: on_reload, on_restart, on_role_change, on_start, on_stop.
+    <hook>                  Possible values: on_reload, on_restart,
+                            on_role_change, on_start, on_stop.
     <role>                  Current node role in cluster. Possible values: master, replica.
     <scope>                 Cluster name.
 """
@@ -41,6 +43,7 @@ formatter = logging.Formatter(
 
 handler.setFormatter(formatter)
 logger.addHandler(handler)
+
 
 def ip_addr_manipulation(action, vip_address, interface):
     ip = IPRoute()
@@ -73,11 +76,13 @@ def ip_addr_manipulation(action, vip_address, interface):
                     vip_address, interface))
         else:
             logger.info(
-                "Unable to remove an ip address {} from the network interface {}. Already removed!".format(
-                    vip_address, interface))
+                "Unable to remove an ip address {} from the network interface {}."
+                " Already removed!".format(vip_address, interface)
+            )
         logger.info("Netlink error: {}".format(e))
     finally:
         ip.close()
+
 
 def main():
     args = docopt(__doc__)
@@ -93,6 +98,7 @@ def main():
 
     if args['<hook>'] in hooks_list and args['<role>'] == 'replica' and args['<scope>']:
         ip_addr_manipulation('delete', vip_address, interface)
+
 
 if __name__ == '__main__':
     main()
