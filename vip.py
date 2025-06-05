@@ -44,7 +44,6 @@ formatter = logging.Formatter(
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-
 def ip_addr_manipulation(action, vip_address, interface):
     ip = IPRoute()
     index = ip.link_lookup(ifname=interface)
@@ -83,7 +82,6 @@ def ip_addr_manipulation(action, vip_address, interface):
     finally:
         ip.close()
 
-
 def main():
     args = docopt(__doc__)
     logger.info(
@@ -98,7 +96,6 @@ def main():
 
     if args['<hook>'] in hooks_list and args['<role>'] == 'replica' and args['<scope>']:
         ip_addr_manipulation('delete', vip_address, interface)
-
 
 if __name__ == '__main__':
     main()
