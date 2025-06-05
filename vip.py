@@ -43,29 +43,42 @@ logger.addHandler(handler)
 
 def ip_addr_manipulation(action, vip_address):
     ip = IPRoute()
-    # Get interface name
+    # Get interface name. link_lookup returns a list
     index = ip.link_lookup(ifname=vm_interface)
-    if index:
-        try:
-            # Assign or remove IP address (vm_vip_address) to/from network interface (vm_interface)
-            ip.addr(action, index, vip_address, mask=24)
-            if action == 'add':
-                logger.info("An ip address {} added to the network interface {}.".format(
+    if not index:
+        logger.info(
+            "Interface {} not found. Skipping ip address manipulation.".format(
+                vm_interface))
+        ip.close()
+        return
+    try:
+        # Assign or remove IP address (vm_vip_address) to/from network interface (vm_interface)
+        ip.addr(action, index[0], vip_address, mask=24)
+        if action == 'add':
+            logger.info(
+                "An ip address {} added to the network interface {}.".format(
                     vip_address, vm_interface))
-                # If assigned, send arp ping to everyone at Level2
-                sendp(Ether(dst='ff:ff:ff:ff:ff:ff')/ARP(psrc=vm_vip_address),iface=vm_interface,loop=1,inter=0,count=3)
-            else:
-                logger.info("An ip address {} removed from the network interface {}.".format(
+            # If assigned, send arp ping to everyone at Level2
+            sendp(
+                Ether(dst='ff:ff:ff:ff:ff:ff') / ARP(psrc=vm_vip_address),
+                iface=vm_interface,
+                loop=1,
+                inter=0,
+                count=3,
+            )
+        else:
+            logger.info(
+                "An ip address {} removed from the network interface {}.".format(vip_address, vm_interface))
+    except NetlinkError as e:
+        if action == 'add':
+            logger.info(
+                "Unable to add an ip address {} to the network interface {}. Already added!".format(
                     vip_address, vm_interface))
-        # Catch errors
-        except NetlinkError as e:
-            if action == 'add':
-                logger.info("Unable to add an ip address {} to the network interface {}. Already added!".format(
-                vip_address, vm_interface))
-            else:
-                logger.info("Unable to remove an ip address {} from the network interface {}. Already removed!".format(
-                vip_address, vm_interface))
-            logger.info("Netlink error: {}".format(e))
+        else:
+            logger.info(
+                "Unable to remove an ip address {} from the network interface {}. Already removed!".format(
+                    vip_address, vm_interface))
+        logger.info("Netlink error: {}".format(e))
     ip.close()
 
 def main():
