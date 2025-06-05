@@ -11,9 +11,9 @@ The script relies on `pyroute2` to manipulate network interfaces and `scapy` to
 broadcast ARP packets after the VIP changes. Command line parsing is handled by
 `docopt`.
 
-When executed, `vip.py` expects three arguments: the Patroni hook name,
-the current node role (`master` or `replica`), and the cluster scope. On master
-events it adds the configured VIP, and on replica events it removes it.
+When executed, `vip.py` expects a Patroni hook name, the current node role
+(`master` or `replica`) and the cluster scope. Optional arguments allow you to
+specify the network interface and VIP without editing the script.
 
 ## Setup
 
@@ -21,14 +21,16 @@ events it adds the configured VIP, and on replica events it removes it.
    ```bash
    pip install -r requirements.txt
    ```
-2. **Adjust the interface and VIP**
-   Edit the variables `vm_interface` and `vm_vip_address` at the top of
-   `vip.py` to match your network environment.
-3. **Run with appropriate privileges**
+   Python 3.8 or newer is recommended.
+2. **Run with appropriate privileges**
    Adding or removing IP addresses requires administrative permissions. Test the
    script with sudo:
    ```bash
    sudo python vip.py on_start master mycluster
+   ```
+   Use `--interface` and `--vip` options to override defaults:
+   ```bash
+   sudo python vip.py --interface=eth1 --vip=10.0.0.10 on_start master mycluster
    ```
 
 ## Integrating with Patroni
@@ -46,9 +48,18 @@ The path should point to the location of `vip.py` on each node.
 Simulate a role change by calling the script manually:
 ```bash
 sudo python vip.py on_role_change master mycluster
-sudo python vip.py on_role_change replica mycluster
+sudo python vip.py --interface=eth1 --vip=10.0.0.10 on_role_change replica mycluster
 ```
 Check the logs or `ip addr show` to verify that the VIP is added or removed.
+
+## Linting and Tests
+Flake8 and pytest can be run locally to check the code style and run the unit
+tests. The network operations are mocked so no special privileges are required:
+```bash
+pip install -r requirements.txt
+flake8 vip.py tests
+pytest
+```
 
 ## Troubleshooting
 - Ensure the selected network interface exists on your system and that the host
@@ -60,4 +71,7 @@ Check the logs or `ip addr show` to verify that the VIP is added or removed.
 - [pyroute2 documentation](https://github.com/svinota/pyroute2)
 - [scapy documentation](https://scapy.readthedocs.io)
 - [docopt documentation](https://docopt.org)
+
+## License
+This project is licensed under the [MIT License](LICENSE).
 
