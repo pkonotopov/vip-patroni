@@ -48,7 +48,7 @@ def ip_addr_manipulation(action, vip_address):
     if index:
         try:
             # Assing or remove IP address (vm_vip_address) to/from network interface (vm_interface)
-            ip.addr(action, index, vip_address, mask=24)
+            ip.addr(action, index[0], vip_address, mask=24)
             if action == 'add':
                 logger.info("An ip address {} added to the network interface {}.".format(
                     vip_address, vm_interface))
