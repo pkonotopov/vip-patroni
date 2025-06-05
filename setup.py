@@ -8,8 +8,8 @@ setup(
         'arprequest==0.3',
         'docopt==0.6.2',
         'iproute==0.0.1',
-        'pyroute2==0.7.2',
-        'scapy==2.4.5',
+        'pyroute2==0.9.2',
+        'scapy==2.6.1',
     ],
     entry_points={
         'console_scripts': [

@@ -58,7 +58,6 @@ tests. The network operations are mocked so no special privileges are required:
 ```bash
 pip install -r requirements.txt
 flake8 vip.py tests
-
 pytest
 ```
 

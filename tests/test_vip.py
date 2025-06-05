@@ -6,6 +6,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 import vip  # noqa: E402
 
+
 class DummyIP:
     def __init__(self):
         self.addr_calls = []
@@ -20,6 +21,7 @@ class DummyIP:
     def close(self):
         self.closed = True
 
+
 @mock.patch("vip.IPRoute", return_value=DummyIP())
 @mock.patch("vip.sendp")
 def test_add_ip(mock_sendp, mock_iproute):
@@ -29,6 +31,7 @@ def test_add_ip(mock_sendp, mock_iproute):
     mock_sendp.assert_called_once()
     assert ip.closed
 
+
 @mock.patch("vip.IPRoute", return_value=DummyIP())
 @mock.patch("vip.sendp")
 def test_delete_ip(mock_sendp, mock_iproute):
@@ -37,6 +40,7 @@ def test_delete_ip(mock_sendp, mock_iproute):
     assert ip.addr_calls == [('delete', 1, '10.0.0.10', 24)]
     mock_sendp.assert_not_called()
     assert ip.closed
+
 
 @mock.patch("vip.IPRoute", return_value=DummyIP())
 @mock.patch("vip.sendp")

@@ -19,7 +19,6 @@ Options:
 
 import sys
 import logging
-from docopt import docopt
 from pyroute2 import IPRoute
 from pyroute2 import NetlinkError
 from scapy.sendrecv import sendp
@@ -44,6 +43,7 @@ formatter = logging.Formatter(
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+
 def ip_addr_manipulation(action, vip_address, interface):
     ip = IPRoute()
     index = ip.link_lookup(ifname=interface)
@@ -52,7 +52,7 @@ def ip_addr_manipulation(action, vip_address, interface):
         ip.close()
         return
     try:
-        ip.addr(action, index[0], vip_address, mask=24)
+        ip.addr(action, index=index[0], address=vip_address, mask=24)
         if action == 'add':
             logger.info(
                 "An ip address {} added to the network interface {}.".format(
@@ -96,6 +96,7 @@ def main():
 
     if args['<hook>'] in hooks_list and args['<role>'] == 'replica' and args['<scope>']:
         ip_addr_manipulation('delete', vip_address, interface)
+
 
 if __name__ == '__main__':
     main()
