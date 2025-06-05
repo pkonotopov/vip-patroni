@@ -68,8 +68,7 @@ def ip_addr_manipulation(action, vip_address):
             )
         else:
             logger.info(
-                "An ip address {} removed from the network interface {}.".format(
-                    vip_address, vm_interface))
+                "An ip address {} removed from the network interface {}.".format(vip_address, vm_interface))
     except NetlinkError as e:
         if action == 'add':
             logger.info(
