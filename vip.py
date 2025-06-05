@@ -52,7 +52,7 @@ def ip_addr_manipulation(action, vip_address, interface):
         ip.close()
         return
     try:
-        ip.addr(action, index[0], vip_address, mask=24)
+        ip.addr(action, index=index[0], address=vip_address, mask=24)
         if action == 'add':
             logger.info(
                 "An ip address {} added to the network interface {}.".format(
