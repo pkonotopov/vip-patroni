@@ -82,9 +82,7 @@ def ip_addr_manipulation(action, vip_address, interface):
     finally:
         ip.close()
 
-
 def main():
-    from docopt import docopt
     args = docopt(__doc__)
     logger.info(
         "hook='{}', role='{}', scope='{}'".format(
